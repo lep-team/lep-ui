@@ -1,0 +1,12 @@
+{
+  "extends": "tsconfigs/nodejs-module",
+  "compilerOptions": {
+    "outDir": "lib"
+  },
+  "include": [
+    "test/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

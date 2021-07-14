@@ -1,0 +1,14 @@
+{
+  "eslint.validate": [
+    "vue",
+    "html",
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "editor.tabSize": 2
+}
