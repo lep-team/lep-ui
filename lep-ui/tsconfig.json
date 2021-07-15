@@ -1,0 +1,24 @@
+// tsconfig.json 配置
+{
+  "compilerOptions": {
+    "outDir": "dist", // 指定输出目录
+    "declaration": true, // 生成声明文件，开启后会自动生成声明文件
+    "baseUrl": "", // 解析非相对模块的基地址，默认是当前目录
+    "module": "esnext", // 生成代码的模板标准
+    "target": "es5", // 目标语言的版本
+    "lib": ["es6", "dom"], // TS需要引用的库，即声明文件，es5 默认引用dom、es5、scripthost,如需要使用es的高级版本特性，通常都需要配置
+    "sourceMap": true, // 生成目标文件的sourceMap文件
+    "jsx": "react",
+    "moduleResolution": "node", // 模块解析策略，ts默认用node的解析策略，即相对的方式导入
+    "rootDir": ".",
+    "noImplicitReturns": true, //每个分支都会有返回值
+    "noImplicitThis": true, // 不允许this有隐式的any类型
+    "noImplicitAny": true, // 不允许隐式的any类型
+    "importHelpers": true, // 通过tslib引入helper函数，文件必须是模块
+    "strictNullChecks": true, // 不允许把null、undefined赋值给其他类型的变量
+    "esModuleInterop": true, // 允许export=导出，由import from 导入
+    "noUnusedLocals": true // 检查只声明、未使用的局部变量(只提示不报错)
+  },
+  "includes": ["lib/**/*"],
+  "exclude": ["node_modules", "build", "dist"]
+}
