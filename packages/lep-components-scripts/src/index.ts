@@ -10,7 +10,7 @@ program.command('build')
   .description('build components')
   .action(Actions.build);
 
-program.command('lint')
+program.command('lint [path]')
 .description('lint codes')
 .action(Actions.lint)
 
