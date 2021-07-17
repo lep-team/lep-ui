@@ -1,1 +1,3 @@
-初始化组件库仓库
+## lep-components-scripts
+
+提供组件库命令的工具包
