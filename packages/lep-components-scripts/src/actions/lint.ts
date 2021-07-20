@@ -1,22 +1,28 @@
-import ora from 'ora'
+import { ESLint } from 'eslint'
+import { Console } from '../utils'
 
-import { RunCmd } from '../utils'
 
+export default async (path: string = './components'): Promise<void> => {
+  const cwd = process.cwd()
+  const eslint = new ESLint({
+    cwd,
+    extensions: ['js', 'jsx', 'ts', 'tsx'],
+    fix: true,
+  })
 
-export default async (path: string = './components') => {
-  const cmdQueue = [ 
-    {
-      cmd: 'eslint',
-      options: [
-        path,
-        '--fix',
-        '--ext',
-        '.js,.ts,jsx,.tsx'
-      ]
-    }
-  ]
-  for (let i = 0; i < cmdQueue.length; i++) {
-    const { cmd, options } = cmdQueue[i];
-    await RunCmd(cmd, options)
+  try {
+    const results: Array<ESLint.LintResult> = await eslint.lintFiles(path)
+    await ESLint.outputFixes(results)
+    const errorFiles: Array<ESLint.LintResult> = results.filter((result: ESLint.LintResult) => {
+      return result.messages.length > 0
+    })
+    errorFiles.forEach((file: ESLint.LintResult) => {
+      const { filePath, messages } = file
+      Console('')
+      Console(filePath, 2)
+      messages.forEach(msg => Console(`${msg.message}\nline: ${msg.line}, column: ${msg.column}`, 2))
+    })
+  } catch (error) {
+    Console(error.message, 2)
   }
 }
