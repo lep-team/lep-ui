@@ -1,18 +1,30 @@
-import path from "path";
-import { runCLI } from "jest";
-import type {Config} from '@jest/types';
-import jestConfig from '../../config/jest.config'
+import path from "path"
+import { runCLI } from "jest"
+import type {Config} from '@jest/types'
+import { Console } from "../utils"
 
-export default (options: { watch: Boolean }) => {
-  const { watch } = options
+type Options  = { watch: Boolean, updateSnapshot: Boolean }
+
+export default async (options: Options): Promise<void> => {
+  const { watch, updateSnapshot } = options
   const cwd = process.cwd()
-  const configPath = path.resolve(cwd, 'jest.config.ts')
-
+  const configPath = path.resolve(__dirname, '../../config/jest.config.js')
   const config = {
     rootDir: cwd,
     watch,
-    config: {}
+    updateSnapshot,
+    config: configPath
   } as Config.Argv
 
-  runCLI(config, [cwd])
+  try {
+    const { results: { success } } = await runCLI(config, [cwd])
+    if (!success && !watch) {
+      process.exit(1)
+    }
+  } catch (error) {
+    Console(error.message, 2)
+    if (!watch) {
+      process.exit(1)
+    }
+  }
 };

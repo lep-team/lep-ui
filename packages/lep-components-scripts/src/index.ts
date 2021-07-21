@@ -15,7 +15,8 @@ program
 
 program
   .command("test")
-  .option("-watch", "watch test")
+  .option("-w --watch", "watch test")
+  .option("-u --updateSnapshot", "updateSnapshot")
   .description("validate test components")
   .action(Actions.test);
 
