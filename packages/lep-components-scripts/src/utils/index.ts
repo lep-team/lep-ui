@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import execa from 'execa';
 import ora from "ora";
+import * as Compiler from './complier'
 
 function Console (msg: string, level: number = 0): void {
   switch (level) {
@@ -36,8 +37,10 @@ async function RunCmd (cmd: string, options: string[]): Promise<void> {
   }
 }
 
+
 export {
+  Compiler,
   Console,
   RunCmd,
-  CheckCmdExist
+  CheckCmdExist,
 }
