@@ -6,7 +6,12 @@ import Actions from "./actions";
 
 program.version(pkg.version);
 
-program.command("build").description("build components").action(Actions.build);
+program
+  .command("build")
+  .option("--entry <dir>", "entry dir")
+  .option("--output <dir>", "output dir")
+  .description("build components")
+  .action(Actions.build);
 
 program
   .command("lint [path]")

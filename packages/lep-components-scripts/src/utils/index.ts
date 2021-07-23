@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import execa from 'execa';
 import ora from "ora";
+import { existsSync } from 'fs-extra';
 import * as Compiler from './complier'
 
 function Console (msg: string, level: number = 0): void {
@@ -37,10 +38,21 @@ async function RunCmd (cmd: string, options: string[]): Promise<void> {
   }
 }
 
+function existsPath (path: string) {
+  return new Promise((resolve, reject) => {
+    if (existsSync(path)) {
+      resolve(path)
+    } else {
+      reject(`cant not find path: ${path}`)
+    }
+  })
+}
+
 
 export {
   Compiler,
   Console,
   RunCmd,
   CheckCmdExist,
+  existsPath
 }
