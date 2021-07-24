@@ -1,17 +1,11 @@
 {
-  "name": "eslint-config-lep-ts",
+  "name": "@lep-team/eslint-config",
   "version": "1.0.1",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "peerDependencies": {
-    "eslint": ">= 3"
-  },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",

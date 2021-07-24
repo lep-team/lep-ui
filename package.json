@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/lep-team/lep-ui#readme",
   "devDependencies": {
-    "@lep-team/eslint-config": "^1.0.0"
+    "@lep-team/eslint-config": "^1.0.1"
   }
 }

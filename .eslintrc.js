@@ -1,4 +1,4 @@
 module.exports = {
   root: true,
-  extends: ["@lep-team"],
+  extends: ['@lep-team']
 };
