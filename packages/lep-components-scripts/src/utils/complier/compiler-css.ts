@@ -4,7 +4,7 @@ import postcss from "postcss";
 import postcssFlexbugsFixes from "postcss-flexbugs-fixes";
 import postcssPresetEnv from "postcss-preset-env";
 
-export default async (data: string, isFile: boolean = false) => {
+export default async (data: string, isFile = false) => {
   try {
     if (isFile) {
       await existsPath(data);

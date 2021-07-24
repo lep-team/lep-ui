@@ -1,0 +1,23 @@
+{
+  "name": "lep-ui",
+  "version": "1.0.0",
+  "description": "项目全部都采用ts编写",
+  "main": ".prettierrc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lep-team/lep-ui.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lep-team/lep-ui/issues"
+  },
+  "homepage": "https://github.com/lep-team/lep-ui#readme",
+  "devDependencies": {
+    "@lep-team/eslint-config": "^1.0.0"
+  }
+}
