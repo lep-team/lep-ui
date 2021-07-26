@@ -12,3 +12,7 @@ test.create();
 class PO { }
 new PO();
 const b = 1;
+const a = {
+  o: 1,
+  a: '2'
+};
