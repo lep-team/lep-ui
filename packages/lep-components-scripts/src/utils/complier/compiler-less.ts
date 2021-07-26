@@ -1,17 +1,17 @@
-import { render } from "less";
+import { render } from 'less';
 import { readFileSync } from 'fs-extra';
-import { Console, existsPath } from "..";
+import { Console, existsPath } from '..';
 
 export default async (path: string) => {
   try {
-    await existsPath(path)
-    const source = readFileSync(path, 'utf8')
+    existsPath(path);
+    const source = readFileSync(path, 'utf8');
     const { css } = await render(source, {
       filename: path
     });
-    return css
+    return css;
   } catch (error) {
-    Console(error, 2)
-    process.exit(1)
+    Console(error, 2);
+    process.exit(1);
   }
 };

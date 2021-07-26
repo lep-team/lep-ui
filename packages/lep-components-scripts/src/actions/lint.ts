@@ -1,12 +1,13 @@
 import { ESLint } from 'eslint';
 import { Console } from '../utils';
 import baseConfig from '@lep-team/eslint-config';
+import { MODULE_EXTENSIONS } from '../constant';
 
 export default async (path = './components'): Promise<void> => {
   const cwd = process.cwd();
   const eslint = new ESLint({
     cwd,
-    extensions: ['js', 'jsx', 'ts', 'tsx'],
+    extensions: MODULE_EXTENSIONS,
     fix: true,
     baseConfig
   });

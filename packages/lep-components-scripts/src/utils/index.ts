@@ -1,8 +1,8 @@
-import chalk from "chalk";
-import execa from "execa";
-import ora from "ora";
-import { existsSync } from "fs-extra";
-import * as Compiler from "./complier";
+import chalk from 'chalk';
+import execa from 'execa';
+import ora from 'ora';
+import { existsSync, statSync } from 'fs-extra';
+import * as Compiler from './complier';
 
 function Console(msg: string, level = 0): void {
   switch (level) {
@@ -22,7 +22,7 @@ function Console(msg: string, level = 0): void {
 
 async function CheckCmdExist(cmd: string, options: string[]): Promise<void> {
   await execa(cmd, options, {
-    cwd: process.cwd(),
+    cwd: process.cwd()
   });
 }
 
@@ -30,7 +30,7 @@ async function RunCmd(cmd: string, options: string[]): Promise<void> {
   const spinner = ora(`start run ${cmd}`).start();
   try {
     await execa(cmd, options, {
-      cwd: process.cwd(),
+      cwd: process.cwd()
     });
     spinner.succeed(`${cmd} run succed`);
   } catch (error) {
@@ -39,13 +39,38 @@ async function RunCmd(cmd: string, options: string[]): Promise<void> {
 }
 
 function existsPath(path: string) {
-  return new Promise((resolve, reject) => {
-    if (existsSync(path)) {
-      resolve(path);
-    } else {
-      reject(`cant not find path: ${path}`);
-    }
-  });
+  const isExist = existsSync(path);
+  if (!isExist) {
+    throw Error(`cant not find path: ${path}`);
+  }
 }
 
-export { Compiler, Console, RunCmd, CheckCmdExist, existsPath };
+function setProcessEnv(envName: string, value: string) {
+  if (!envName) {
+    throw Error('envName must not be undefined');
+  }
+  process.env[envName] = value;
+}
+
+function getProcessEnv(envName: string) {
+  if (!envName) {
+    throw Error('envName must not be undefined');
+  }
+  return process.env[envName];
+}
+
+function isDirectory(path: string) {
+  const statObj = statSync(path);
+  return statObj.isDirectory();
+}
+
+export {
+  Compiler,
+  Console,
+  RunCmd,
+  CheckCmdExist,
+  existsPath,
+  setProcessEnv,
+  getProcessEnv,
+  isDirectory
+};
