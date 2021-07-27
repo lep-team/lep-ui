@@ -4,7 +4,12 @@ import ora from 'ora';
 import { Compiler, setProcessEnv, existsPath, isDirectory } from '../utils';
 import { MODULE_NAME } from '../constant';
 
-type Options = { entry: string; output: string };
+type Options = {
+  entry: string;
+  output: string;
+  outputLanguage: string;
+  outputStyle: string;
+};
 
 async function compilerDir(entryPath: string, output: string) {
   const statObj = fs.statSync(entryPath);
@@ -32,26 +37,7 @@ async function comilerFile(filePath: string, output: string) {
     case '.tsx':
       {
         const code = await Compiler.compilerJs(filePath);
-        fs.outputFileSync(output, code);
-      }
-      break;
-    case '.css':
-      {
-        const code = await Compiler.compilerCss(filePath);
-        fs.outputFileSync(output, code);
-      }
-      break;
-    case '.less':
-      {
-        const code = await Compiler.compilerLess(filePath);
-        fs.copyFileSync(filePath, output);
-        fs.outputFileSync(output, code);
-      }
-      break;
-    case '.scss':
-      {
-        const code = await Compiler.compilerSass(filePath);
-        fs.copyFileSync(filePath, output);
+        output = output.replace(ext, '.js');
         fs.outputFileSync(output, code);
       }
       break;
@@ -73,8 +59,9 @@ function genEnrtyDir(enrtyPath: string) {
   }
 }
 
-function genEntryFile(entryPath: string) {
-  const entryFilePath = path.resolve(entryPath, 'index');
+function genEntryFile(entryPath: string, isJs: boolean, language: string) {
+  const entryJs = `index.${language}`;
+  const entryFilePath = path.resolve(entryPath, entryJs);
   try {
     existsPath(entryFilePath);
   } catch (error) {
@@ -84,9 +71,12 @@ function genEntryFile(entryPath: string) {
       const dir = dirs[i];
       const absPath = path.resolve(entryPath, dir);
       const isDir = isDirectory(absPath);
-
-      if (isDir && fs.existsSync(path.resolve(absPath, 'index'))) {
-        code += `export { default as ${dir} } from './${dir}';\n`;
+      if (isDir && fs.existsSync(path.resolve(absPath, `index.${language}`))) {
+        if (isJs) {
+          code += `export { default as ${dir} } from './${dir}';\n`;
+        } else {
+          code += `@import './${dir}';\n`;
+        }
       }
     }
     fs.outputFileSync(entryFilePath, code);
@@ -94,26 +84,69 @@ function genEntryFile(entryPath: string) {
 }
 
 function buildModule(module = 'es', entryPath: string, output: string) {
+  const statObj = fs.statSync(entryPath);
+  const isDir = statObj.isDirectory();
+  if (!isDir) {
+    throw Error(`entryPath is not dir`);
+  }
   const modulePath = path.resolve(output, module);
-  fs.mkdirSync(modulePath);
   setProcessEnv(MODULE_NAME, module);
-  compilerDir(entryPath, output);
+  compilerDir(entryPath, modulePath);
 }
 
 function cleanDir(cleanPath: string) {
   fs.removeSync(cleanPath);
 }
 
-async function buildUmdModule(enrtyPath: string, output: string) {
-  const entryFilePath = path.resolve(enrtyPath, 'index');
-  genEntryFile(entryFilePath);
+async function buildUmdModule(
+  enrtyPath: string,
+  output: string,
+  language: string
+) {
+  const entryFilePath = path.resolve(enrtyPath, `index.${language}`);
   output = path.resolve(output, 'index.min.js');
   await Compiler.compilerPkg(entryFilePath, output);
 }
 
+async function buildStylesEntry(
+  enrtyPath: string,
+  output: string,
+  outputStyle: string
+) {
+  const entryStyleFilePath = path.resolve(enrtyPath, `index.${outputStyle}`);
+  const outputStyleFilePath = path.resolve(output, `index.min.${outputStyle}`);
+  switch (outputStyle) {
+    case 'less':
+      {
+        let code = await Compiler.compilerLess(entryStyleFilePath);
+        code = await Compiler.compilerCss(code);
+        fs.outputFileSync(outputStyleFilePath, code);
+      }
+      break;
+    case 'scss':
+      {
+        let code = await Compiler.compilerSass(entryStyleFilePath);
+        code = await Compiler.compilerCss(code);
+        fs.outputFileSync(outputStyleFilePath, code);
+      }
+      break;
+    default:
+      {
+        const code = await Compiler.compilerCss(entryStyleFilePath);
+        fs.outputFileSync(outputStyleFilePath, code);
+      }
+      break;
+  }
+}
+
 export default async (options: Options) => {
   const basePath = process.cwd();
-  const { entry = 'components', output = 'dist' } = options;
+  const {
+    entry = 'components',
+    output = 'dist',
+    outputLanguage = 'ts',
+    outputStyle = 'scss'
+  } = options;
   const entryPath = path.resolve(basePath, entry);
   const outputPath = path.resolve(basePath, output);
 
@@ -127,6 +160,14 @@ export default async (options: Options) => {
       action: genEnrtyDir.bind(this, entryPath)
     },
     {
+      task: 'genEntryJsFile',
+      action: genEntryFile.bind(this, entryPath, true, outputLanguage)
+    },
+    {
+      task: 'genEntryStyleFile',
+      action: genEntryFile.bind(this, entryPath, false, outputStyle)
+    },
+    {
       task: 'buildEsModule',
       action: buildModule.bind(this, 'es', entryPath, outputPath)
     },
@@ -136,7 +177,11 @@ export default async (options: Options) => {
     },
     {
       task: 'buildUmdModule',
-      action: buildUmdModule.bind(this, entryPath, outputPath)
+      action: buildUmdModule.bind(this, entryPath, outputPath, outputLanguage)
+    },
+    {
+      task: 'buildStylesEntry',
+      action: buildStylesEntry.bind(this, entryPath, outputPath, outputStyle)
     }
   ];
 

@@ -1,10 +1,11 @@
 import { Console, existsPath } from '..';
 import { readFileSync } from 'fs-extra';
 import postcss from 'postcss';
+import CleanCSS from 'clean-css';
 import postcssFlexbugsFixes from 'postcss-flexbugs-fixes';
 import postcssPresetEnv from 'postcss-preset-env';
 
-export default (data: string, isFile = false) => {
+export default async (data: string, isFile = false) => {
   try {
     if (isFile) {
       existsPath(data);
@@ -23,7 +24,7 @@ export default (data: string, isFile = false) => {
       })
     ];
     const { css } = postcss(plugins).process(data);
-    return css;
+    return new CleanCSS({}).minify(css).styles;
   } catch (error) {
     Console(error, 2);
     process.exit(1);
