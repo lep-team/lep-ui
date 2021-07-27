@@ -17,7 +17,34 @@ module.exports = {
         test: /\.tsx?$/,
         loader: 'ts-loader',
         exclude: /node_modules/,
-      }
+      },
+      {
+        test: /\.css$/,
+        use: [
+            'style-loader',
+            {
+                loader: 'css-loader',
+                options: {
+                    importLoaders: 1
+                }
+            },
+            'postcss-loader'
+        ]
+      },
+      {
+        test: /\.less$/,
+        use: [
+            'style-loader',
+            {
+                loader: 'css-loader',
+                options: {
+                    importLoaders: 2
+                }
+            },
+            'less-loader',
+            'postcss-loader'
+        ]
+      },
     ]
   },
 }
