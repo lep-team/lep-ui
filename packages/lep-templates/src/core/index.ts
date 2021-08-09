@@ -1,8 +1,11 @@
 import path from 'path';
 import fs from 'fs-extra';
 import chalk from 'chalk';
+import ora from 'ora';
+import symbols from 'log-symbols';
 import execa from 'execa';
 import { ETemplateTypes, ICreatorOptions } from '../types';
+import { loadRemote } from '../utils';
 
 interface ICreatorApis {
   create(): void;
@@ -19,9 +22,12 @@ export class Creator implements ICreatorApis {
     this.context = '';
   }
 
-  public create() {
-    const templatesDir = path.join(__dirname, '../templates');
-    const targetTemplateDir = path.resolve(templatesDir, this.template);
+  public async create() {
+    if (this.template in ETemplateTypes) {
+      console.log(chalk.red(`There is no such template`));
+      process.exit(0);
+    }
+
     this.context = path.resolve(process.cwd(), this.pkg.name);
 
     if (fs.existsSync(this.context)) {
@@ -29,25 +35,34 @@ export class Creator implements ICreatorApis {
       process.exit(0);
     }
 
-    if (!fs.existsSync(targetTemplateDir)) {
-      console.log(chalk.red(`There is no such template`));
-      process.exit(0);
-    }
-
+    let spinner = ora(`Pulling template...`);
+    spinner.start();
     try {
-      fs.copySync(targetTemplateDir, this.context);
-    } catch (err) {
-      console.error('fs copy failed', err);
+      const repository = `direct:https://github.com/lep-team/lep-ui/tree/develop/packages/lep-templates/templates/${this.template}`;
+
+      console.log('repository', repository);
+
+      await loadRemote(repository, this.context);
+
+      spinner.succeed();
+      console.log(symbols.success, chalk.green('Template pulled successfully'));
+
+      const packageFile = path.resolve(this.context, 'package.json');
+      fs.writeJsonSync(packageFile, this.initPkg(packageFile));
+
+      this.run('git init');
+
+      spinner = ora(`Installing CLI plugins. This might take a while...`);
+      spinner.start();
+
+      this.run('npm install');
+
+      spinner.succeed();
+      console.log(symbols.success, chalk.green('Installed'));
+    } catch (error) {
+      spinner.fail();
+      console.log(symbols.error, chalk.red('Template pull failed'), error);
     }
-
-    const packageFile = path.resolve(this.context, 'package.json');
-    fs.writeJsonSync(packageFile, this.initPkg(packageFile));
-
-    this.run('git init');
-    console.log('⚙\u{fe0f} Installing CLI plugins. This might take a while...');
-
-    this.run('npm install');
-    console.log('Installed');
   }
 
   private initPkg(packageFile: string) {
