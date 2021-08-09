@@ -19,6 +19,7 @@
   "homepage": "https://github.com/lep-team/lep-ui#readme",
   "devDependencies": {
     "@lep-team/eslint-config": "^1.0.1",
+    "@types/fs-extra": "^9.0.12",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "prettier": "2.3.2"

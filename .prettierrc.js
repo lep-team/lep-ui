@@ -26,6 +26,6 @@ module.exports = {
   insertPragma: false,
   // 使用默认的折行标准
   proseWrap: 'preserve',
-  // 换行符使用 lf
-  endOfLine: 'lf'
+  // 换行符使用 auto
+  endOfLine: 'auto'
 }
