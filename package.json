@@ -1,27 +1,17 @@
 {
-  "name": "lep-ui",
+  "name": "react-pc-component",
   "version": "1.0.0",
-  "description": "项目全部都采用ts编写",
-  "main": ".prettierrc.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lep-team/lep-ui.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/lep-team/lep-ui/issues"
-  },
-  "homepage": "https://github.com/lep-team/lep-ui#readme",
-  "devDependencies": {
-    "@lep-team/eslint-config": "^1.0.1",
-    "@types/fs-extra": "^9.0.12",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "prettier": "2.3.2"
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0"
   }
 }
