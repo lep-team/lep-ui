@@ -1,9 +1,14 @@
-import path from 'path';
-import fs from 'fs-extra';
-import chalk from 'chalk';
-import ora from 'ora';
-import symbols from 'log-symbols';
-import execa from 'execa';
+// import path from 'path';
+// import fs from 'fs-extra';
+// import chalk from 'chalk';
+// import ora from 'ora';
+// import execa from 'execa';
+
+const path = require('path');
+const fs = require('fs-extra');
+const chalk = require('chalk');
+const ora = require('ora');
+const execa = require('execa');
 import { ETemplateTypes, ICreatorOptions } from '../types';
 import { loadRemote } from '../utils';
 
@@ -29,40 +34,41 @@ export class Creator implements ICreatorApis {
     }
 
     this.context = path.resolve(process.cwd(), this.pkg.name);
+    console.log(this.context, 'this.context');
 
     if (fs.existsSync(this.context)) {
       console.log(chalk.red(`The ${this.pkg.name} folder is already exists!`));
       process.exit(0);
     }
 
-    let spinner = ora(`Pulling template...`);
-    spinner.start();
+    const pulling = ora(`Pulling template...`);
+    pulling.start();
     try {
-      const repository = `direct:https://github.com/lep-team/lep-ui/tree/develop/packages/lep-templates/templates/${this.template}`;
+      const repository = `github:lep-team/lep-ui#${this.template}`;
 
       console.log('repository', repository);
 
       await loadRemote(repository, this.context);
-
-      spinner.succeed();
-      console.log(symbols.success, chalk.green('Template pulled successfully'));
-
-      const packageFile = path.resolve(this.context, 'package.json');
-      fs.writeJsonSync(packageFile, this.initPkg(packageFile));
-
-      this.run('git init');
-
-      spinner = ora(`Installing CLI plugins. This might take a while...`);
-      spinner.start();
-
-      this.run('npm install');
-
-      spinner.succeed();
-      console.log(symbols.success, chalk.green('Installed'));
+      pulling.succeed();
+      console.log(chalk.green('Template pulled successfully'));
     } catch (error) {
-      spinner.fail();
-      console.log(symbols.error, chalk.red('Template pull failed'), error);
+      pulling.fail();
+      console.log(chalk.red('Template pull failed'), error);
     }
+
+    const packageFile = path.resolve(this.context, 'package.json');
+    fs.writeJsonSync(packageFile, this.initPkg(packageFile));
+
+    this.run('git init');
+
+    const install = ora(`Installing CLI plugins. This might take a while...`);
+    install.start();
+
+    this.run('npm install');
+
+    install.succeed();
+    console.log(chalk.green('Installed'));
+    process.exit(0);
   }
 
   private initPkg(packageFile: string) {

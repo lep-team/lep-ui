@@ -1,7 +1,6 @@
 export enum ETemplateTypes {
   REACT_PC_COMPONENT = 'react-pc-component',
-  REACT_MOBILE_COMPONENT = 'react-mobile-component',
-  REACT_MOBILE_COMPONENT2 = 'react-mobile-component2'
+  REACT_MOBILE_COMPONENT = 'react-mobile-component'
 }
 
 export interface ICreatorOptions {

@@ -1,9 +1,17 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
+    "target": "es2015",
+    "module": "commonjs",
     "moduleResolution": "node",
+    "lib": [
+      "es2015",
+      "es2016",
+      "es2017",
+      "es2018",
+      "ESNext",
+      "DOM"
+    ],
     "strict": true,
     "sourceMap": true,
     "resolveJsonModule": true,
