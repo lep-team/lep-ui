@@ -34,7 +34,6 @@ export class Creator implements ICreatorApis {
     }
 
     this.context = path.resolve(process.cwd(), this.pkg.name);
-    console.log(this.context, 'this.context');
 
     if (fs.existsSync(this.context)) {
       console.log(chalk.red(`The ${this.pkg.name} folder is already exists!`));
@@ -45,8 +44,6 @@ export class Creator implements ICreatorApis {
     pulling.start();
     try {
       const repository = `github:lep-team/lep-ui#${this.template}`;
-
-      console.log('repository', repository);
 
       await loadRemote(repository, this.context);
       pulling.succeed();
@@ -68,7 +65,6 @@ export class Creator implements ICreatorApis {
 
     install.succeed();
     console.log(chalk.green('Installed'));
-    process.exit(0);
   }
 
   private initPkg(packageFile: string) {
