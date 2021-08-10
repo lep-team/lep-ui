@@ -28,7 +28,7 @@ export class Creator implements ICreatorApis {
   }
 
   public async create() {
-    if (this.template in ETemplateTypes) {
+    if (!Object.values(ETemplateTypes).includes(this.template)) {
       console.log(chalk.red(`There is no such template`));
       process.exit(0);
     }
