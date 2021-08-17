@@ -47,15 +47,16 @@ async function comilerFile(filePath: string, output: string) {
   }
 }
 
-function genEnrtyDir(enrtyPath: string) {
-  const isDir = isDirectory(enrtyPath);
-  if (!isDir) {
-    throw Error(`path：${path} is not directory`);
-  }
+function genBuildDir(outPath: string) {
   try {
-    existsPath(enrtyPath);
+    existsPath(outPath);
   } catch (error) {
-    fs.mkdirSync(enrtyPath);
+    fs.mkdirSync(outPath);
+    const isDir = isDirectory(outPath);
+    if (!isDir) {
+      fs.rmdirSync(outPath);
+      throw Error(`path：${path} is not directory`);
+    }
   }
 }
 
@@ -156,8 +157,8 @@ export default async (options: Options) => {
       action: cleanDir.bind(this, outputPath)
     },
     {
-      task: 'genEntryDir',
-      action: genEnrtyDir.bind(this, entryPath)
+      task: 'genBuildDir',
+      action: genBuildDir.bind(this, outputPath)
     },
     {
       task: 'genEntryJsFile',
@@ -190,9 +191,9 @@ export default async (options: Options) => {
     const spinner = ora(`start run task: ${task}`).start();
     try {
       await action();
-      spinner.succeed('task action run success!');
+      spinner.succeed(`task ${task} run success!`);
     } catch (error) {
-      spinner.fail(error);
+      spinner.fail(error.message);
       process.exit(1);
     }
   }

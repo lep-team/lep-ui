@@ -1,6 +1,6 @@
 import { ConfigAPI } from '@babel/core';
-import { MODULE_NAME } from '..//src/constant';
-import { getProcessEnv } from '../src/utils';
+import { MODULE_NAME } from '../constant';
+import { getProcessEnv } from '../utils';
 
 export default (api?: ConfigAPI) => {
   if (api) {

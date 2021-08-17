@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { program } from 'commander';
+// @ts-ignore
 import pkg from '../package.json';
 
 import Actions from './actions';

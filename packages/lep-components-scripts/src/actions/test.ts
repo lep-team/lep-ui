@@ -8,7 +8,7 @@ type Options = { watch: boolean; updateSnapshot: boolean };
 export default async (options: Options): Promise<void> => {
   const { watch, updateSnapshot } = options;
   const cwd = process.cwd();
-  const configPath = path.resolve(__dirname, '../../config/jest.config.js');
+  const configPath = path.resolve(__dirname, '../config/jest.config.js');
   const config = {
     rootDir: cwd,
     watch,

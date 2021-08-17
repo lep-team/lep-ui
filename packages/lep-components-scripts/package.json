@@ -1,12 +1,16 @@
 {
-  "name": "lep-components-scripts",
-  "version": "1.0.0",
+  "name": "@lep-team/lep-components-scripts",
+  "version": "1.0.6",
   "description": "提供组件库命令的工具包",
-  "main": "build/src/index.js",
-  "scripts": {
-    "dev": "tsc --watch"
+  "main": "build/index.js",
+  "bin": {
+    "lep-components-scripts": "build/index.js"
   },
-  "keywords": [],
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "keywords": ["react", "component", "lep"],
   "author": "shuaiqidekaige",
   "license": "ISC",
   "files": [

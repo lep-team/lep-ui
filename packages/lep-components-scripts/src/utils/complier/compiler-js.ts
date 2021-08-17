@@ -1,6 +1,6 @@
 import { transformFileSync } from '@babel/core';
 import { Console, existsPath } from '..';
-import getBabelConfig from '../../../config/babel.config';
+import getBabelConfig from '../../config/babel.config';
 
 export default (path: string) => {
   try {

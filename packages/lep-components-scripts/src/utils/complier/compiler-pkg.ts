@@ -4,9 +4,9 @@ import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import url from '@rollup/plugin-url';
-import { MODULE_EXTENSIONS } from '../../constant';
+import { MODULE_EXTENSIONS, MODULE_NAME } from '../../constant';
+import { setProcessEnv } from '..';
 import path from 'path';
-
 export default async (
   entryPath = path.resolve(process.cwd(), './components/index.ts'),
   outputPath = path.resolve(process.cwd(), './dist/index.min.js')
@@ -15,6 +15,7 @@ export default async (
     name: string;
   };
   const absPath = path.dirname(outputPath);
+  setProcessEnv(MODULE_NAME, 'es');
   const bundle = await rollup({
     input: entryPath,
     plugins: [
