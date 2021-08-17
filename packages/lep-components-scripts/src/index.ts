@@ -25,7 +25,7 @@ program
   .action(Actions.test);
 
 program
-  .command('site [order]')
+  .command('site <order>')
   .description('document for your components')
   .action(Actions.site);
 
