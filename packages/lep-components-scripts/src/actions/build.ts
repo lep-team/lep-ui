@@ -76,7 +76,7 @@ function genEntryFile(entryPath: string, isJs: boolean, language: string) {
         if (isJs) {
           code += `export { default as ${dir} } from './${dir}';\n`;
         } else {
-          code += `@import './${dir}';\n`;
+          code += `@import './${dir}/index';\n`;
         }
       }
     }

@@ -34,10 +34,11 @@ export default async (
       babel({
         exclude: ['node_module'],
         babelHelpers: 'runtime',
+        skipPreflightCheck: true,
         extensions: MODULE_EXTENSIONS
       })
     ],
-    external: [/@babel\/runtime/]
+    external: [/@babel\/runtime/, 'React']
   });
   await bundle.write({
     format: 'umd',

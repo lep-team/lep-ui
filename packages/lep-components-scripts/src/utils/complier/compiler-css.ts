@@ -23,7 +23,7 @@ export default async (data: string, isFile = false) => {
         stage: 3
       })
     ];
-    const { css } = postcss(plugins).process(data);
+    const { css } = await postcss(plugins).process(data, { from: undefined });
     return new CleanCSS({}).minify(css).styles;
   } catch (error) {
     Console(error, 2);

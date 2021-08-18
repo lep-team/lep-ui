@@ -1,6 +1,5 @@
 import path from 'path';
 import { runCLI } from 'jest';
-import type { Config } from '@jest/types';
 import { Console } from '../utils';
 
 type Options = { watch: boolean; updateSnapshot: boolean };
@@ -13,8 +12,9 @@ export default async (options: Options): Promise<void> => {
     rootDir: cwd,
     watch,
     updateSnapshot,
+    passWithNoTests: true,
     config: configPath
-  } as Config.Argv;
+  } as any;
 
   try {
     const {
