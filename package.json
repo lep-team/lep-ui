@@ -8,8 +8,14 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -e $HUSKY_GIT_PARAMS"
+      "commit-msg": "commitlint -e $HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint '*.{ts,tsx,js,jsx}' --fix"
+    ]
   },
   "repository": {
     "type": "git",
@@ -31,5 +37,8 @@
     "eslint-plugin-prettier": "^3.4.0",
     "husky": "^4.2.5",
     "prettier": "2.3.2"
+  },
+  "dependencies": {
+    "lint-staged": "^10.2.11"
   }
 }
