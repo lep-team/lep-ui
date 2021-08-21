@@ -6,6 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -e $HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint '*.{ts,tsx,js,jsx}' --fix"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lep-team/lep-ui.git"
@@ -18,10 +29,16 @@
   },
   "homepage": "https://github.com/lep-team/lep-ui#readme",
   "devDependencies": {
+    "@commitlint/cli": "^9.0.1",
+    "@commitlint/config-conventional": "^9.0.1",
     "@lep-team/eslint-config": "^1.0.1",
     "@types/fs-extra": "^9.0.12",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
+    "husky": "^4.2.5",
     "prettier": "2.3.2"
+  },
+  "dependencies": {
+    "lint-staged": "^10.2.11"
   }
 }
