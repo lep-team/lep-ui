@@ -1,22 +1,21 @@
 const React = require('react')
 const ReactDOM = require('react-dom')
-const { BrowserRouter, Switch, Route } = require('react-router-dom')
-const render = require('../components/renderElement')
+const { BrowserRouter, Switch } = require('react-router-dom')
+const generatorRoute = require('../util/generatorRoute')
 <% cssFiles.forEach(function (filePath) { %>
 require("<%= filePath %>")
 <% }) %>
 
+
 const renderFunctions = <%- renderElementFuntions %>
 function App(){
 return (
-<Switch>
-  <% routes.forEach(function (route) { %>
-    <Route path="<%= route.path %>" children={()=> (
-      render(<%- route.component %>, renderFunctions)
-        )} />
-        <% }) %>
-</Switch>
-)
+  <Switch>
+    {
+      generatorRoute(<%- routes %>, renderFunctions)
+    }
+  </Switch>
+  )
 }
 
 ReactDOM.render(

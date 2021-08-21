@@ -58,6 +58,9 @@ module.exports = function getWebpackConfig() {
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, '../', '_template/index.html')
       })
-    ]
+    ],
+    snapshot: {
+      managedPaths: []
+    }
   };
 };

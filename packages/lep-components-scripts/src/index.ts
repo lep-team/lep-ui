@@ -27,6 +27,8 @@ program
 
 program
   .command('site <order>')
+  .option('--entry <dir>', 'entry site')
+  .option('--output <dir>', 'output site')
   .description('document for your components')
   .action(Actions.site);
 
