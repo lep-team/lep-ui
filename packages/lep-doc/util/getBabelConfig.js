@@ -4,7 +4,7 @@ module.exports = function getBabelConfig() {
       require.resolve('@babel/preset-react'),
       require.resolve('@babel/preset-env')
     ],
-    plugins: [],
+    plugins: ['@babel/plugin-transform-runtime'],
     compact: false
   };
 };

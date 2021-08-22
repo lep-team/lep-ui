@@ -1,20 +1,21 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
-const { BrowserRouter, Switch } = require('react-router-dom')
-const generatorRoute = require('../util/generatorRoute')
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import render from '../components/renderElement'
+<% mdImports.forEach(function (item) { %>
+  import <%= item.name %> from "<%= item.path %>"
+<% }) %>
 <% cssFiles.forEach(function (filePath) { %>
-require("<%= filePath %>")
+import "<%= filePath %>"
 <% }) %>
 
 
 const renderFunctions = <%- renderElementFuntions %>
 function App(){
-return (
-  <Switch>
-    {
-      generatorRoute(<%- routes %>, renderFunctions)
-    }
-  </Switch>
+  return (
+    <div>
+      <%- getRoute({ "routes": routes, "getRoute": getRoute }) %>
+    </div>
   )
 }
 

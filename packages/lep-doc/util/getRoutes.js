@@ -4,29 +4,35 @@ const fs = require('fs');
 const context = require('./context');
 const cwd = path.resolve(__dirname, '../', '_template');
 
-function getMdRoute(mdPath, prefix = '') {
+
+let mdImports = []
+function getMdRoute(mdPath, prefix = '', preIndex = '') {
   prefix += '/';
   const dirs = fs.readdirSync(mdPath);
   const blackArr = ['node_modules'];
   let mdArr = [];
-  dirs.forEach((dir) => {
+  dirs.forEach((dir, index) => {
     const absPath = path.resolve(mdPath, dir);
     const statObj = fs.statSync(absPath);
     if (!blackArr.includes(dir)) {
       if (statObj.isDirectory()) {
         const parent = {
           path: `${prefix}${dir}`,
-          children: getMdRoute(absPath, `${prefix}${dir}`)
+          children: getMdRoute(absPath, `${prefix}${dir}`, index)
         };
         mdArr = [...mdArr, parent];
       } else {
         if (path.extname(absPath) === '.md') {
+          const name = `md${preIndex}${index}`
+          const resolvePaht = `${path.relative(cwd, absPath).replace(/\\/g, '/')}`
+          mdImports.push({
+            name,
+            path: resolvePaht
+          })
           const routerPath = `${prefix}${dir}`;
           mdArr.push({
             path: routerPath.replace('.md', ''),
-            component: `require('./${path
-              .relative(cwd, absPath)
-              .replace(/\\/g, '/')}')`
+            componentName: name
           });
         }
       }
@@ -37,6 +43,7 @@ function getMdRoute(mdPath, prefix = '') {
 }
 
 function getRoutes() {
+  mdImports = []
   const config = context.getConfig();
   const dir = config.mdEntry;
   const statObj = fs.statSync(dir);
@@ -44,7 +51,11 @@ function getRoutes() {
     console.error(chalk.red('mdEntry must be directory'));
     process.exit(1);
   }
-  return getMdRoute(dir);
+  const routes = getMdRoute(dir)
+  return {
+    routes,
+    mdImports,
+  };
 }
 
 module.exports = getRoutes;

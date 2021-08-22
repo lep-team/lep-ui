@@ -21,7 +21,8 @@ module.exports = function getWebpackConfig() {
     output: {
       path: config.output,
       filename: 'index.[contenthash:8].js',
-      clean: true
+      clean: true,
+      publicPath: '/'
     },
     resolve: {
       modules: ['node_modules'],
@@ -31,6 +32,7 @@ module.exports = function getWebpackConfig() {
       rules: [
         {
           test: /\.js?$/,
+          include: path.resolve(__dirname, '../'),
           loader: require.resolve('babel-loader'),
           options: babelConfig
         },

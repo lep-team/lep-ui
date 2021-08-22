@@ -1,4 +1,4 @@
-const React = require("react");
+import React from 'react'
 
 let renderElementFns = [];
 
@@ -29,7 +29,6 @@ function renderElements(children) {
 }
 
 function render(sequlize, renderElementFuntions) {
-  sequlize = sequlize.default;
   if (
     renderElementFuntions &&
     Array.isArray(renderElementFuntions) &&
@@ -40,4 +39,4 @@ function render(sequlize, renderElementFuntions) {
   return renderElements(sequlize);
 }
 
-module.exports = render;
+export default render;
