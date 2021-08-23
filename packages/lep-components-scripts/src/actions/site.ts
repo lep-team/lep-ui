@@ -12,7 +12,7 @@ type Options = {
 };
 
 export default (order: string, option: Options) => {
-  const { entry, output } = option;
+  const { entry = 'components', output = 'dist' } = option;
   runCli(order, {
     mdEntry: path.resolve(process.cwd(), entry),
     output: path.resolve(process.cwd(), output),

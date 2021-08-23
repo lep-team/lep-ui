@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import ora from 'ora';
+import execa from 'execa';
 import { Compiler, setProcessEnv, existsPath, isDirectory } from '../utils';
 import { MODULE_NAME } from '../constant';
 
@@ -19,11 +20,17 @@ async function compilerDir(entryPath: string, output: string) {
     const dirs = fs.readdirSync(entryPath);
     for (let i = 0; i < dirs.length; i++) {
       const dirPath = dirs[i];
+      if (dirPath.includes('__tests__')) {
+        return;
+      }
       const absPath = path.resolve(entryPath, dirPath);
       const outputs = path.resolve(output, dirPath);
       await compilerDir(absPath, outputs);
     }
   } else {
+    if (entryPath.includes('.d.ts')) {
+      return;
+    }
     await comilerFile(entryPath, output);
   }
 }
@@ -41,8 +48,32 @@ async function comilerFile(filePath: string, output: string) {
         fs.outputFileSync(output, code);
       }
       break;
+    case '.less':
+      {
+        fs.copyFileSync(filePath, output);
+        let code = await Compiler.compilerLess(filePath);
+        code = await Compiler.compilerCss(code);
+        output = output.replace(ext, '.css');
+        fs.outputFileSync(output, code);
+      }
+      break;
+    case '.scss':
+      {
+        fs.copyFileSync(filePath, output);
+        let code = await Compiler.compilerSass(filePath);
+        code = await Compiler.compilerCss(code);
+        output = output.replace(ext, '.css');
+        fs.outputFileSync(output, code);
+      }
+      break;
+    case '.css':
+      {
+        let code = fs.readFileSync(filePath, 'utf-8');
+        code = await Compiler.compilerCss(code);
+        fs.outputFileSync(output, code);
+      }
+      break;
     default:
-      fs.copyFileSync(filePath, output);
       break;
   }
 }
@@ -97,6 +128,18 @@ function buildModule(module = 'es', entryPath: string, output: string) {
 
 function cleanDir(cleanPath: string) {
   fs.removeSync(cleanPath);
+}
+
+async function genDeclaration() {
+  const cwd = process.cwd();
+  const tsConfigPath = path.resolve(cwd, 'tsconfig.json');
+  if (fs.existsSync(tsConfigPath)) {
+    execa('tsc', [], {
+      cwd
+    });
+  } else {
+    throw Error('cant not find tsconfig.json');
+  }
 }
 
 async function buildUmdModule(
@@ -175,6 +218,10 @@ export default async (options: Options) => {
     {
       task: 'buildLibModule',
       action: buildModule.bind(this, 'lib', entryPath, outputPath)
+    },
+    {
+      task: 'genDeclaration',
+      action: genDeclaration.bind(this)
     },
     {
       task: 'buildUmdModule',

@@ -1,6 +1,6 @@
 {
   "name": "@lep-team/lep-components-scripts",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "提供组件库命令的工具包",
   "main": "build/index.js",
   "bin": {
