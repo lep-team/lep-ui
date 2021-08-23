@@ -4,6 +4,7 @@ import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import url from '@rollup/plugin-url';
+import { uglify } from 'rollup-plugin-uglify';
 import { MODULE_EXTENSIONS, MODULE_NAME } from '../../constant';
 import { setProcessEnv } from '..';
 import path from 'path';
@@ -36,7 +37,8 @@ export default async (
         babelHelpers: 'runtime',
         skipPreflightCheck: true,
         extensions: MODULE_EXTENSIONS
-      })
+      }),
+      uglify()
     ],
     external: [/@babel\/runtime/, 'React']
   });

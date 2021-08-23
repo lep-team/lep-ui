@@ -8,7 +8,7 @@ import { MODULE_NAME } from '../constant';
 type Options = {
   entry: string;
   output: string;
-  outputLanguage: string;
+  language: string;
   outputStyle: string;
 };
 
@@ -92,10 +92,29 @@ function genBuildDir(outPath: string) {
 }
 
 function genEntryFile(entryPath: string, isJs: boolean, language: string) {
-  const entryJs = `index.${language}`;
-  const entryFilePath = path.resolve(entryPath, entryJs);
+  let entryFilePath = '';
   try {
-    existsPath(entryFilePath);
+    if (language.includes('ts')) {
+      const extname = ['ts', 'tsx'];
+      let isExist = false;
+      for (let i = 0; i < extname.length; i++) {
+        const ext = extname[i];
+        const entryJs = `index.${ext}`;
+        entryFilePath = path.resolve(entryPath, entryJs);
+        if ((isExist = fs.existsSync(entryFilePath))) {
+          break;
+        }
+      }
+      if (!isExist) {
+        const entryJs = `index.${language}`;
+        entryFilePath = path.resolve(entryPath, entryJs);
+        throw Error();
+      }
+    } else {
+      const entryJs = `index.${language}`;
+      entryFilePath = path.resolve(entryPath, entryJs);
+      existsPath(entryFilePath);
+    }
   } catch (error) {
     const dirs = fs.readdirSync(entryPath);
     let code = ``;
@@ -115,7 +134,7 @@ function genEntryFile(entryPath: string, isJs: boolean, language: string) {
   }
 }
 
-function buildModule(module = 'es', entryPath: string, output: string) {
+async function buildModule(module = 'es', entryPath: string, output: string) {
   const statObj = fs.statSync(entryPath);
   const isDir = statObj.isDirectory();
   if (!isDir) {
@@ -123,7 +142,7 @@ function buildModule(module = 'es', entryPath: string, output: string) {
   }
   const modulePath = path.resolve(output, module);
   setProcessEnv(MODULE_NAME, module);
-  compilerDir(entryPath, modulePath);
+  await compilerDir(entryPath, modulePath);
 }
 
 function cleanDir(cleanPath: string) {
@@ -147,7 +166,23 @@ async function buildUmdModule(
   output: string,
   language: string
 ) {
-  const entryFilePath = path.resolve(enrtyPath, `index.${language}`);
+  let isTs = false;
+  let entryFilePath = '';
+  if (language.includes('ts')) {
+    isTs = true;
+  }
+  if (isTs) {
+    const extname = ['ts', 'tsx'];
+    for (let i = 0; i < extname.length; i++) {
+      const ext = extname[i];
+      entryFilePath = path.resolve(enrtyPath, `index.${ext}`);
+      if (fs.existsSync(entryFilePath)) {
+        break;
+      }
+    }
+  } else {
+    entryFilePath = path.resolve(enrtyPath, `index.${language}`);
+  }
   output = path.resolve(output, 'index.min.js');
   await Compiler.compilerPkg(entryFilePath, output);
 }
@@ -188,7 +223,7 @@ export default async (options: Options) => {
   const {
     entry = 'components',
     output = 'dist',
-    outputLanguage = 'ts',
+    language = 'ts',
     outputStyle = 'scss'
   } = options;
   const entryPath = path.resolve(basePath, entry);
@@ -205,7 +240,7 @@ export default async (options: Options) => {
     },
     {
       task: 'genEntryJsFile',
-      action: genEntryFile.bind(this, entryPath, true, outputLanguage)
+      action: genEntryFile.bind(this, entryPath, true, language)
     },
     {
       task: 'genEntryStyleFile',
@@ -225,7 +260,7 @@ export default async (options: Options) => {
     },
     {
       task: 'buildUmdModule',
-      action: buildUmdModule.bind(this, entryPath, outputPath, outputLanguage)
+      action: buildUmdModule.bind(this, entryPath, outputPath, language)
     },
     {
       task: 'buildStylesEntry',

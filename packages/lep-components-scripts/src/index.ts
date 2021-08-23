@@ -11,7 +11,7 @@ program
   .command('build')
   .option('--entry <dir>', 'entry dir')
   .option('--output <dir>', 'output dir')
-  .option('--outputLanguage <language>', 'outputLanguage')
+  .option('--language <language>', 'language')
   .option('--outputStyle <style>', 'outputStyle')
   .description('build components')
   .action(Actions.build);
