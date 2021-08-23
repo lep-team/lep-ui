@@ -1,6 +1,6 @@
 {
   "name": "@lep-team/lep-doc",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "transform md to html",
   "main": "src/index.js",
   "keywords": [

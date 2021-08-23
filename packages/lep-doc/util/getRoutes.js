@@ -18,12 +18,12 @@ function getMdRoute(mdPath, prefix = '', preIndex = '') {
       if (statObj.isDirectory()) {
         const parent = {
           path: `${prefix}${dir}`,
-          children: getMdRoute(absPath, `${prefix}${dir}`, index)
+          children: getMdRoute(absPath, `${prefix}${dir}`, (preIndex ? (preIndex + '-' + index) : String(index)))
         };
         mdArr = [...mdArr, parent];
       } else {
         if (path.extname(absPath) === '.md') {
-          const name = `md${preIndex}${index}`
+          const name = `md${preIndex.replace(/-/g, '')}${index}`
           const resolvePaht = `${path.relative(cwd, absPath).replace(/\\/g, '/')}`
           mdImports.push({
             name,
