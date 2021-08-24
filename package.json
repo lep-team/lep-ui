@@ -6,7 +6,8 @@
     "build": "lep-components-scripts build --entry components --outputLanguage tsx --outputStyle less",
     "lint": "lep-components-scripts lint",
     "test": "lep-components-scripts test",
-    "site:start": "lep-components-scripts site start --entry components --output site"
+    "site:start": "lep-components-scripts site start --entry components",
+    "site:build": "lep-components-scripts site build --entry components --output site"
   },
   "husky": {
     "hooks": {
