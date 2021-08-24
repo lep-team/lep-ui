@@ -2,6 +2,7 @@
   "name": "lep-ui",
   "version": "1.0.0",
   "description": "lep-components-ui",
+  "typings": "dist/types/index.d.ts",
   "scripts": {
     "build": "lep-components-scripts build --entry components --outputLanguage tsx --outputStyle less",
     "lint": "lep-components-scripts lint",

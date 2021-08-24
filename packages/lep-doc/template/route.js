@@ -1,4 +1,4 @@
-const ejs = require('ejs')
+const ejs = require('ejs');
 const routeTemplate = `
 <Switch>
   <% routes.forEach(function(r, index) { %>
@@ -11,17 +11,16 @@ const routeTemplate = `
         <Route
           key="<%= index %>"
           path="<%- r.path %>"
-          exact 
+          exact
           component={() => render(<%= r.componentName %>, renderFunctions)}
         />
       <% }  %>
     <% }) %>
 </Switch>
-  `
+  `;
 
 const getRoute = (data) => {
-  console.log(typeof data, data)
-  return ejs.render(routeTemplate, data)
-}
+  return ejs.render(routeTemplate, data);
+};
 
-module.exports = getRoute
+module.exports = getRoute;

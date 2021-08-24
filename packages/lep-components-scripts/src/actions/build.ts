@@ -228,7 +228,7 @@ export default async (options: Options) => {
   } = options;
   const entryPath = path.resolve(basePath, entry);
   const outputPath = path.resolve(basePath, output);
-
+  const isTs = language.includes('ts');
   const tasks = [
     {
       task: 'cleanDir',
@@ -255,10 +255,6 @@ export default async (options: Options) => {
       action: buildModule.bind(this, 'lib', entryPath, outputPath)
     },
     {
-      task: 'genDeclaration',
-      action: genDeclaration.bind(this)
-    },
-    {
       task: 'buildUmdModule',
       action: buildUmdModule.bind(this, entryPath, outputPath, language)
     },
@@ -267,6 +263,13 @@ export default async (options: Options) => {
       action: buildStylesEntry.bind(this, entryPath, outputPath, outputStyle)
     }
   ];
+
+  if (isTs) {
+    tasks.push({
+      task: 'genDeclaration',
+      action: genDeclaration.bind(this)
+    });
+  }
 
   for (let i = 0; i < tasks.length; i++) {
     const { task, action } = tasks[i];
