@@ -40,11 +40,14 @@ export default async (
       }),
       uglify()
     ],
-    external: [/@babel\/runtime/, 'React']
+    external: ['react']
   });
   await bundle.write({
     format: 'umd',
     file: outputPath,
-    name: pkg.name
+    name: pkg.name,
+    globals: {
+      react: 'React'
+    }
   });
 };

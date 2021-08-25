@@ -4,7 +4,7 @@
   "description": "lep-components-ui",
   "typings": "dist/types/index.d.ts",
   "scripts": {
-    "build": "lep-components-scripts build --entry components --outputLanguage tsx --outputStyle less",
+    "build": "lep-components-scripts build --entry components --language tsx --outputStyle less",
     "lint": "lep-components-scripts lint",
     "test": "lep-components-scripts test",
     "site:start": "lep-components-scripts site start --entry components",
@@ -36,15 +36,20 @@
     "@commitlint/cli": "^9.0.1",
     "@commitlint/config-conventional": "^9.0.1",
     "@lep-team/eslint-config": "^1.0.1",
-    "@lep-team/lep-components-scripts": "^1.1.0",
+    "@lep-team/lep-components-scripts": "^1.1.4",
     "@types/fs-extra": "^9.0.12",
+    "@types/react": "^17.0.19",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "husky": "^4.2.5",
-    "prettier": "2.3.2"
+    "lint-staged": "^10.2.11",
+    "prettier": "2.3.2",
+    "typescript": "^4.3.5"
   },
   "dependencies": {
-    "lint-staged": "^10.2.11",
+    "@babel/runtime": "^7.15.3"
+  },
+  "peerDependencies": {
     "react": "^17.0.2"
   }
 }
