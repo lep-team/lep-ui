@@ -17,6 +17,7 @@ module.exports = function getWebpackConfig() {
   ];
   return {
     mode,
+    devtool: mode === 'development' ? 'eval-cheap-module-source-map' : 'none',
     entry: path.resolve(__dirname, '../', '_template/index.js'),
     output: {
       path: config.output,
@@ -48,6 +49,26 @@ module.exports = function getWebpackConfig() {
               ? { loader: require.resolve('style-loader') }
               : MiniCssExtractPlugin.loader,
             { loader: require.resolve('css-loader') }
+          ]
+        },
+        {
+          test: /\.less$/,
+          use: [
+            mode === 'development'
+              ? { loader: require.resolve('style-loader') }
+              : MiniCssExtractPlugin.loader,
+            { loader: require.resolve('css-loader') },
+            { loader: require.resolve('less-loader') }
+          ]
+        },
+        {
+          test: /\.s[ac]ss$/,
+          use: [
+            mode === 'development'
+              ? { loader: require.resolve('style-loader') }
+              : MiniCssExtractPlugin.loader,
+            { loader: require.resolve('css-loader') },
+            { loader: require.resolve('sass-loader') }
           ]
         }
       ]

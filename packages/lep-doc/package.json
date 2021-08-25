@@ -1,6 +1,6 @@
 {
   "name": "@lep-team/lep-doc",
-  "version": "1.0.7",
+  "version": "1.1.0",
   "description": "transform md to html",
   "main": "src/index.js",
   "keywords": [
@@ -24,6 +24,8 @@
     "ejs": "^3.1.6",
     "highlight.js": "^11.2.0",
     "html-webpack-plugin": "^5.3.2",
+    "less": "^4.1.1",
+    "less-loader": "^10.0.1",
     "merge": "^2.1.1",
     "mini-css-extract-plugin": "^2.2.0",
     "portfinder": "^1.0.28",
@@ -33,6 +35,8 @@
     "remark": "^13.0.0",
     "remark-gfm": "^1.0.0",
     "remark-parse": "^10.0.0",
+    "sass": "^1.38.1",
+    "sass-loader": "^12.1.0",
     "style-loader": "^3.2.1",
     "webpack": "^5.51.0",
     "webpack-cli": "^4.8.0",

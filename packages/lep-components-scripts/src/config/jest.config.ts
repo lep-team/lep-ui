@@ -9,8 +9,10 @@ const defaultConfig = {
     '!**/demo/**',
     '!**/test/**'
   ],
+  testPathIgnorePatterns: ['/node_modules/', '/packages/'],
   coverageReporters: ['html', 'lcov', 'text'],
-  coverageDirectory: './coverage' // 输出位置
+  coverageDirectory: './coverage', // 输出位置
+  setupFiles: [path.resolve(__dirname, './test/setupFile.js')]
 };
 
 const jestConfigPath = path.resolve(process.cwd(), 'jest.config');

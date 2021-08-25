@@ -149,15 +149,27 @@ function cleanDir(cleanPath: string) {
   fs.removeSync(cleanPath);
 }
 
-async function genDeclaration() {
+function checkTsValidate() {
   const cwd = process.cwd();
-  const tsConfigPath = path.resolve(cwd, 'tsconfig.json');
+  const tsConfigPath = path.resolve(cwd, 'tsconfig.check.json');
   if (fs.existsSync(tsConfigPath)) {
-    execa('tsc', [], {
+    execa('tsc', ['-p', tsConfigPath], {
       cwd
     });
   } else {
-    throw Error('cant not find tsconfig.json');
+    throw Error('cant not find tsconfig.check.json');
+  }
+}
+
+async function genDeclaration() {
+  const cwd = process.cwd();
+  const tsConfigPath = path.resolve(cwd, 'tsconfig.declaration.json');
+  if (fs.existsSync(tsConfigPath)) {
+    execa('tsc', ['-p', tsConfigPath], {
+      cwd
+    });
+  } else {
+    throw Error('cant not find tsconfig.declaration.json');
   }
 }
 
@@ -265,6 +277,10 @@ export default async (options: Options) => {
   ];
 
   if (isTs) {
+    tasks.unshift({
+      task: 'checkTsValidate',
+      action: checkTsValidate.bind(this)
+    });
     tasks.push({
       task: 'genDeclaration',
       action: genDeclaration.bind(this)
