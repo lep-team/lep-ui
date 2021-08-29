@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "lep-components-ui",
   "typings": "dist/types/index.d.ts",
+  "main": "dist/lib/index.js",
   "scripts": {
     "build": "lep-components-scripts build --entry components --language tsx --outputStyle less",
     "lint": "lep-components-scripts lint",
@@ -47,9 +48,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@babel/runtime": "^7.15.3",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "@babel/runtime": "^7.15.3"
   },
   "peerDependencies": {
     "react": "^17.0.2",

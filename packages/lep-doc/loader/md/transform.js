@@ -1,13 +1,13 @@
-const chalk = require("chalk");
-const context = require("../../util/context");
+const chalk = require('chalk');
+const context = require('../../util/context');
 
 function createNode(options = {}) {
-  const { type = "", value, props = {}, children = [] } = options;
+  const { type = '', value, props = {}, children = [] } = options;
   return {
     type,
     value,
     props,
-    children,
+    children
   };
 }
 
@@ -15,87 +15,90 @@ function transform(node, options = {}) {
   const { isThead = false } = options;
   const { type, depth, value, lang, ordered, title, url, alt, align } = node;
   const ele = createNode();
-  ele.type = "dom";
+  ele.type = 'dom';
   switch (type) {
-    case "root":
-      ele.value = "article";
+    case 'root':
+      ele.value = 'article';
       break;
-    case "heading":
+    case 'heading':
       ele.value = `h${depth}`;
       break;
-    case "paragraph":
-      ele.value = "p";
+    case 'paragraph':
+      ele.value = 'p';
       break;
-    case "text":
-      ele.type = "text";
+    case 'text':
+      ele.type = 'text';
       ele.value = value;
       break;
-    case "code":
-      ele.value = "pre";
-      ele.props = {
-        lang,
-      };
-      const children = [
-        createNode({
-          type: "dom",
-          value: "code",
-          children: [
-            createNode({
-              type: "text",
-              value
-            }),
-          ],
-        }),
-      ];
-      ele.children = children;
+    case 'code':
+      {
+        ele.value = 'pre';
+        ele.props = {
+          lang
+        };
+        const children = [
+          createNode({
+            type: 'dom',
+            value: 'code',
+            children: [
+              createNode({
+                type: 'text',
+                value
+              })
+            ]
+          })
+        ];
+        ele.children = children;
+      }
       break;
-    case "list":
-      ele.value = ordered ? "ol" : "ul";
+    case 'list':
+      ele.value = ordered ? 'ol' : 'ul';
       break;
-    case "listItem":
-      ele.value = "li";
+    case 'listItem':
+      ele.value = 'li';
       break;
-    case "break":
-      ele.value = "br";
-    case "thematicBreak":
-      ele.value = "hr";
+    case 'break':
+      ele.value = 'br';
       break;
-    case "linkReference":
-      ele.value = "span";
+    case 'thematicBreak':
+      ele.value = 'hr';
       break;
-    case "image":
-      ele.value = "img";
+    case 'linkReference':
+      ele.value = 'span';
+      break;
+    case 'image':
+      ele.value = 'img';
       ele.props = {
         title,
         src: url,
-        alt,
+        alt
       };
       break;
-    case "link":
-      ele.value = "a";
+    case 'link':
+      ele.value = 'a';
       ele.props = {
         title,
-        href: url,
+        href: url
       };
       break;
-    case "emphasis":
-      ele.value = "em";
+    case 'emphasis':
+      ele.value = 'em';
       break;
-    case "inlineCode":
-      ele.value = "code";
+    case 'inlineCode':
+      ele.value = 'code';
       ele.children = [createNode({ type: 'text', value })];
       break;
-    case "table":
-      ele.value = "table";
+    case 'table':
+      ele.value = 'table';
       ele.props = {
-        align,
+        align
       };
       break;
-    case "tableCell":
-      ele.value = isThead ? "th" : "td";
+    case 'tableCell':
+      ele.value = isThead ? 'th' : 'td';
       break;
-    case "tableRow":
-      ele.value = "tr";
+    case 'tableRow':
+      ele.value = 'tr';
       break;
     default:
       ele.value = type;
@@ -112,57 +115,59 @@ function onion(plugins, node, isFirst = false) {
   return plugins.reduce((data, next, i) => {
     try {
       if (typeof next !== 'function') {
-        throw Error('plugin must export function')
+        throw Error('plugin must export function');
       }
     } catch (error) {
-      console.error(chalk.red(error.message))
-      process.exit(1)
+      console.error(chalk.red(error.message));
+      process.exit(1);
     }
-    const nextData = next(data)
+    const nextData = next.call(this, data);
     if (typeof nextData !== 'object' || nextData === null) {
-      return data
+      return data;
     }
-    const keys = Object.keys(createNode())
-    const newData = {}
-    keys.forEach(key => {
-      const value = nextData[key]
-      newData[key] = value ? value : data[key]
-    })
+    const keys = Object.keys(createNode());
+    const newData = {};
+    keys.forEach((key) => {
+      const value = nextData[key];
+      newData[key] = value ? value : data[key];
+    });
     if (newData.children && newData.children.length > 0) {
-      newData.children = newData.children.map(child => onion(isFirst ? plugins.slice(i+1) : plugins, child))
+      newData.children = newData.children.map((child) =>
+        onion.call(this, isFirst ? plugins.slice(i + 1) : plugins, child)
+      );
     }
-    return newData
-  }, node)
+    return newData;
+  }, node);
 }
 
 module.exports = function sequlizeNodes(nodes, options = {}) {
   const { plugins } = context.getConfig();
   const children = [];
   nodes.forEach((node) => {
-    const ele = onion(plugins, transform(node, options), true);
+    const ele = onion.call(this, plugins, transform(node, options), true);
     if (
       Array.isArray(ele.children) &&
       node.children &&
       node.children.length > 0
     ) {
-      if (ele.type ==='dom' && ele.value === "table") {
+      if (ele.type === 'dom' && ele.value === 'table') {
         const [thead, ...tbody] = node.children;
         ele.children = [
           createNode({
-            type: "dom",
+            type: 'dom',
             value: 'thead',
             props: {},
-            children: sequlizeNodes([thead], { isThead: true }),
+            children: sequlizeNodes.call(this, [thead], { isThead: true })
           }),
           createNode({
-            type: "dom",
+            type: 'dom',
             value: 'tbody',
             props: {},
-            children: tbody ? sequlizeNodes(tbody) : [],
-          }),
+            children: tbody ? sequlizeNodes.call(this, tbody) : []
+          })
         ];
       } else {
-        ele.children = sequlizeNodes(node.children, options);
+        ele.children = sequlizeNodes.call(this, node.children, options);
       }
     }
     children.push(ele);

@@ -8,7 +8,6 @@ const generatorFiles = require('./generator');
 
 const { setNodeEnv } = require('../util');
 const chalk = require('chalk');
-
 async function start() {
   try {
     setNodeEnv('development');

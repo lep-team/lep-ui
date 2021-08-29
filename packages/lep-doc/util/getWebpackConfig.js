@@ -4,9 +4,12 @@ const context = require('./context');
 const getBabelConfig = require('./getBabelConfig');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const WebpackBar = require('webpackbar');
 const pkg = require('../package.json');
-module.exports = function getWebpackConfig() {
+const fs = require('fs');
+
+function getWebpackConfig() {
   const config = context.getConfig();
   const babelConfig = getBabelConfig();
   const mode = getNodeEnv();
@@ -17,7 +20,6 @@ module.exports = function getWebpackConfig() {
   ];
   return {
     mode,
-    devtool: mode === 'development' ? 'eval-cheap-module-source-map' : 'none',
     entry: path.resolve(__dirname, '../', '_template/index.js'),
     output: {
       path: config.output,
@@ -26,19 +28,24 @@ module.exports = function getWebpackConfig() {
       publicPath: '/'
     },
     resolve: {
-      modules: ['node_modules'],
-      extensions: ['.js', '.jsx', '.json']
+      extensions: ['.js', '.jsx', '.ts', 'tsx', '.json', '.md']
     },
     module: {
       rules: [
         {
-          test: /\.js?$/,
-          include: path.resolve(__dirname, '../'),
+          test: /\.(js|jsx|ts|tsx)$/,
+          include: path.resolve(__dirname, '../', '_template'),
           loader: require.resolve('babel-loader'),
           options: babelConfig
         },
         {
-          test: /\.md?$/,
+          test: /\.(js|jsx|ts|tsx)$/,
+          exclude: /node_module/,
+          loader: require.resolve('babel-loader'),
+          options: babelConfig
+        },
+        {
+          test: /\.md$/,
           exclude: /node_modules/,
           loader: path.resolve(__dirname, '..', 'loader/md')
         },
@@ -86,4 +93,13 @@ module.exports = function getWebpackConfig() {
       managedPaths: []
     }
   };
+}
+module.exports = () => {
+  const config = getWebpackConfig();
+  const isExist = fs.existsSync(process.cwd(), 'tsconfig.js');
+  if (isExist) {
+    config.plugins.push(new ForkTsCheckerWebpackPlugin());
+  }
+
+  return config;
 };
